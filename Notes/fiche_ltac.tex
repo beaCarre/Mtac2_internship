@@ -1,0 +1,111 @@
+
+\documentclass[a4paper, 10pt]{article}
+
+
+\usepackage{multicol}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{syntax}
+
+\begin{document}
+
+\setlength{\grammarparsep}{15pt plus 1pt minus 1pt} % increase separation between rules
+\setlength{\grammarindent}{7em} % increase separation between LHS/RHS 
+\renewcommand{\syntleft}{}
+\renewcommand{\syntright}{}
+
+
+
+\section {}
+\begin{itemize}
+\item 
+\item 
+\item 
+\end{itemize}
+
+
+
+
+\newpage
+\section{ltac}
+
+\begin{grammar}
+
+<expr> ::= <expr> ; <expr>
+\alt <expr> ; [ <expr> | ... | <expr> ]
+\alt <tacexpr3>
+
+<tacexpr3> ::= \textbf{do} (<natural> | <ident>) <tacexpr3>
+ 	\alt \textbf{progress} <tacexpr3>
+ 	\alt \textbf{repeat} <tacexpr3>
+ 	\alt \textbf{try} <tacexpr3>
+ 	\alt \textbf{timeout} (<natural> | <ident>) <tacexpr3>
+ 	\alt <tacexpr2>
+
+
+
+<tacexpr2> ::= <tacexpr1> || <tacexpr3>
+ 	 \alt <tacexpr1>
+
+<tacexpr1> ::= 	\textbf{fun} <name>  …  <name> $\rightarrow$ <atom>
+ 	\alt \textbf{let} [\textbf{rec}] <let\_clause> \textbf{with … with} <let\_clause> \textbf{in} <atom>
+ 	\alt \textbf{match goal with} <context\_rule> | … | <context\_rule> \textbf{end}
+ 	\alt \textbf{match reverse goal with} <context\_rule> | … | <context\_rule> \textbf{end}
+ 	\alt \textbf{match} <expr> \textbf{with} <match\_rule> | … | <match\_rule> \textbf{end}
+ 	\alt \textbf{lazymatch goal with} <context\_rule> | … | <context\_rule> \textbf{end}
+ 	\alt \textbf{lazymatch reverse goal with} <context\_rule> | … | <context\_rule> \textbf{end}
+ 	\alt \textbf{lazymatch} <expr> \textbf{with} <match\_rule> | … | <match\_rule> \textbf{end}
+ 	\alt \textbf{abstract} <atom>
+ 	\alt \textbf{abstract} <atom> \textbf{using} <ident>
+ 	\alt \textbf{first} [ <expr> | … | <expr> ]
+ 	\alt \textbf{solve} [ <expr> | … | <expr> ]
+ 	\alt \textbf{idtac} [<message\_token>  …  <message\_token>]
+ 	\alt \textbf{fail} [natural] [<message\_token>  …  <message\_token>]
+ 	\alt \textbf{fresh}  |  \textbf{fresh} <string>
+ 	\alt \textbf{context} <ident> [ <term> ]
+ 	\alt \textbf{eval} <redexpr> \textbf{in} <term>
+ 	\alt \textbf{type of} <term>
+ 	\alt \textbf{external} <string> <string> <tacarg>  …  <tacarg>
+ 	\alt \textbf{constr} : <term>
+ 	\alt <atomic\_tactic>
+ 	\alt qualid <tacarg>  …  <tacarg>
+ 	\alt <atom>
+
+<atom> ::= <qualid>
+ 	\alt ()
+ 	\alt <integer>
+ 	\alt ( <expr> )
+
+<message\_token> ::= <string>  |  <ident>  |  <integer>
+
+<tacarg> ::= <qualid>
+ 	\alt ()
+ 	\alt \textbf{ltac} : <atom>
+ 	\alt <term>
+
+<let\_clause>	::=	<ident> [<name>  …  <name>] := <expr>
+ 
+<context\_rule> ::= <context\_hyp> , … , <context\_hyp> |-<cpattern> $\Rightarrow$ <expr>
+ 	\alt |- <cpattern> $\Rightarrow$ <expr>
+ 	\alt \_ $\Rightarrow$ <expr>
+ 
+<context\_hyp>	::=	<name> : <cpattern>
+ 	\alt <name> := <cpattern> [: <cpattern>]
+ 
+<match\_rule>	::=	<cpattern> $\Rightarrow$ <expr>
+ 	\alt \textbf{context} [<ident>] [ <cpattern> ] $\Rightarrow$ <expr>
+ 	\alt \textbf{appcontext} [<ident>] [ <cpattern> ] $\Rightarrow$ <expr>
+ 	\alt \_ => <expr>
+
+<top> ::= [Local] \textbf{Ltac} <ltac\_def> \textbf{with … with} <ltac\_def>
+ 
+<ltac\_def>	::=	<ident> [<ident>  …  <ident>] := <expr>
+ 	\alt <qualid> [<ident>  …  <ident>] ::=<expr>
+
+\end{grammar}
+
+
+\end{document}

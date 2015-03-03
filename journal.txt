@@ -1,0 +1,46 @@
+/**************************************************/
+/**************   mercredi 4 mars   ***************/
+/**************************************************/
+
+/**************************************************/
+
+- lecture de SAT-micro commencée
+
+- mise en place de la fiche ltac
+
+- Qu'est-ce qu'une tactique ?
+  ->
+
+- Comment est structuré coq ?
+  + Gallina = language de spécification
+  + terme (Gallina) = programme 
+     	   	      | propriété sur programme 
+		      | preuve de propriété
+  + term => Calculus of Inductive Constructions (CIC) 
+  + assistant de preuve interactif
+  + the vernacular = langage de commandes pour accéder
+  + mode interactif vs mode compilé vs proofgeneral ...
+  + 
+
+- lecture de https://www.mpi-sws.org/~neelk/mtac.pdf
+  -> Gros manque de connaissances 
+  -> retour au Reference Manual de coq (https://coq.inria.fr/refman/index.html)
+
+- depot créé, journal commencé.
+
+/**************************************************/
+/****************   lundi 2 mars   ****************/
+/**************************************************/
+- lire papiers (Mtac, SAT-micro, )
+- créer dépôt sur github
+- journal.txt à la racine du dépôt
+  * faire le point sur chaque rdv
+  * permet de garder une trace
+  * suivi par l'encadrant
+  * permet de reformuler pour assurer la comprehension
+- maitriser coq :
+  * ltac -> fiches sur chaque tactique + exemple(s)
+- en || : SAT-solver (SAT-micro), pour application et maitrise 
+  (voir proof-by-reflexion)
+/**************************************************/
+  
