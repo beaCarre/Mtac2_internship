@@ -1,0 +1,50 @@
+\documentclass[a4paper, 10pt]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[frenchb]{babel}
+\usepackage[T1]{fontenc}
+
+\usepackage{multicol}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{syntax}
+
+\title{Analyse de l'article \emph{SAT-Micro : petit mais costaud !} de
+  S. Conchon et al.}
+\author{B. Carré}
+
+\begin{document}
+\maketitle
+
+
+\section*{introduction}
+Le problème de satisfaisabilité d'une formule propositionnelle est un
+problème NP-complet (parcours de la table de vérité).
+Le \emph{Sat-micro} (un \emph{Sat-solver}), qui décide de la
+satisfaisabilité de ces formules de \emph{forme normale conjonctive}
+(FNC), est basé sur un algorithme \emph{DPLL}, avec quelques
+optimisations telles que le retour en arrière chronologique ou
+l'apprentissage.
+
+\section{L'algorithme DPLL}
+Une FNC est de la forme $\bigwedge^n_{i=1}(l_1\vee\ldots\vee l_{k_i})$
+avec $l_j$ un \emph{litéral} et un ensemble de disjonction est appelé \emph{clause}.
+
+L'algorithme essaie d'attribuer des valeurs au variables, qui rendent
+la formule vraie. Mais avec deux règles particulières qui font qu'il
+n'y a pas besoin de vérifier toutes les possibilités de la table de vérité.
+
+\section{Améliorations}
+\subsection{Retour en arrière non chronologique}
+
+
+\subsection{Apprentissage}
+
+\section{Formes Normales Conjonctives équi-satisfaisables}
+
+\section*{Conclusion}
+
+\end{document}

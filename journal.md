@@ -1,18 +1,38 @@
-
+********************************************************************************
 REUNION : mercredi 10 mars
-======================================================================================
+================================================================================
+
+********************************************************************************
+
+
 
 
 
 Du 4 au 10 mars
-======================================================================================
+================================================================================
 
 * 
 
+* fiche Sat-micro
+
+* implémentation Sat-micro (DPLL+retour en arrière non chronologique)
+
+* TP1, TP2 mpri_2-7-2
+
+* TD1, TD2 Letouzey
+
+* Lecture du chapitre 1 et 2 du cours de A. Miquel      
+    (Preuves assistées par ordinateur)
+
+* Lecture du papier de SAT-Micro
 
 
+
+
+
+********************************************************************************
 REUNION : mercredi 4 mars
-======================================================================================
+================================================================================
 * Changer format du journal (-> md)
 
 * avancer sur SAT-Macro : 
@@ -20,10 +40,13 @@ REUNION : mercredi 4 mars
     * implémenter en OCaml (plus tard en coq)
     
 * Faire en // les td de Pierre Letouzet.
-
+********************************************************************************
+    
+    
+    
 
 Du 2 au 4 mars
-======================================================================================
+================================================================================
 
 * lecture de *SAT-micro* commencée
 
@@ -48,11 +71,12 @@ Du 2 au 4 mars
   -> retour au Reference Manual de coq (https://coq.inria.fr/refman/index.html)
 
 * depot créé, journal commencé.
-
-
+    
+    
+    
+********************************************************************************
 REUNION : lundi 2 mars
-=======================================================================================
-
+================================================================================
 * lire papiers (Mtac, SAT-micro, )
 * créer dépôt sur github
 * journal.txt à la racine du dépôt
@@ -65,4 +89,4 @@ REUNION : lundi 2 mars
 * en || : SAT-solver (SAT-micro), pour application et maitrise de coq
   (voir proof-by-reflexion) problème NP-complet, déterminer si une
   formule propositionnelle est satisfiable, 
-
+********************************************************************************

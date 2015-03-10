@@ -1,4 +1,5 @@
-(** module LITERAL : manipulant les litéraux **)
+
+(** module LITERAL : manipule les litéraux **)
 module type LITERAL = 
 sig
   type t (* le type du litéral *)
@@ -7,7 +8,7 @@ sig
 end
 
 
-(** module FNC : prenant un litéral **)
+(** module FNC : décrit la formule et prend un litéral **)
 module type FNC = 
 sig
   type formule (* le type de la formule *)
@@ -15,60 +16,69 @@ sig
   val make : formule -> L.t list list (* transformant la formule en liste de littéraux *)
 end
 
-
-(** module Sat : prenant une FNC et définissant les règles d'inférence **)
+(** module Sat : prend une FNC et définit les règles d'inférence **)
 module Sat (Fnc : FNC) =
 struct
-  exception Unsat (*  *)
+  module L = Fnc.L
+  module S = Set.Make(L)
+  module M = Map.Make(L)
+
+  exception Unsat of S.t (*  *)
   exception Sat
+    
+  type t = {gamma : S.t M.t ; delta : (L.t list * S.t) list} 
 
-  module L : Fnc.L
-  module S : Set.Make(L)
-  type t = {gamma : S.t; delta : L.t list}
+  (** dispatch :  **)
+  let dispatch d = List.map (fun l -> l,d)
 
-  let rec assume env l =
-    if S.mem l env.gamma then env
-    else bcp { gamma = S.add l env.gamma; delta = env.delat}
+  (** assume : **)
+  let rec assume env (l,d) = 
+    if M.mem l env.gamma then env
+    else bcp { gamma = M.add l d env.gamma ; 
+	       delta = env.delta}
 
+  (** bcp :  **)
   and bcp env =
     List.fold_left 
-      (fun env l ->
+      (fun env (l,d) ->
 	try 
 	  let l = List.filter
 	    (fun f -> 
-	      if S.mem f env.gamma 
+	      if M.mem f env.gamma 
 	      then raise Exit;
-	      not (S.mem (L.mk_not f) env.gamma)
+	      not (M.mem (L.mk_not f) env.gamma)
 	    ) l
 	  in 
 	  match l with 
-	      [] -> rise Unsat
-	    | [f] -> assume env f
-	    | _ -> {env with delta = l :: env.delta}
+	      [] -> raise (Unsat d)
+	    | [f] -> assume env (f,d)
+	    | _ -> {env with delta = (l,d) :: env.delta}
 	with Exit -> env
       )
       {env with delta=[]} env.delta
-  
+      
+  (** unsat :  **)
   let rec unsat env =
     try
       match env.delta with
 	  [] -> raise Sat
-	| ([_] | []) :: _ -> assert false
-	| ( a:: _) :: _ -> 
-	  (try unsat (assume env a) with Unsat -> ());
-	  unsat (assume env (L.mk_not a))
-    with Unsat -> ()
+	| ([_],_ | [],_) :: _ -> assert false
+	| (( a:: _),_) :: _ -> 
+	  let d = 
+	    try unsat (assume env (a,S.singleton a)) 
+	    with Unsat d -> d
+	  in
+	  if not (S.mem a d) 
+	  then d
+	  else unsat (assume env (L.mk_not a, S.remove a d))
+    with Unsat d -> d
 
+  (** dpll :  **)
   let dpll f =
     try
-      unsat (bcp {gamma = S.empty; delta = Fnc.make f}); false
-    with Sat -> true | Unsat -> false
+      let _ =
+	unsat (bcp {gamma = M.empty; delta = dispatch S.empty (Fnc.make f)})
+      in false
+    with Sat -> true | Unsat _ -> false
 
 end
-			     
-
-	    
-	  
-    
-
-      
