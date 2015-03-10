@@ -13,7 +13,7 @@ Du 4 au 10 mars
 
 * 
 
-* fiche Sat-micro
+* notes Sat-micro
 
 * implémentation Sat-micro (DPLL+retour en arrière non chronologique)
 

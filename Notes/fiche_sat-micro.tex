@@ -1,8 +1,10 @@
-\documentclass[a4paper, 10pt]{report}
+\documentclass[a4paper, 10pt]{article}
 
 \usepackage[utf8]{inputenc}
-\usepackage[frenchb]{babel}
 \usepackage[T1]{fontenc}
+\usepackage[frenchb]{babel}
+
+\usepackage{bussproofs}
 
 \usepackage{multicol}
 \usepackage{listings}
@@ -30,18 +32,186 @@ optimisations telles que le retour en arrière chronologique ou
 l'apprentissage.
 
 \section{L'algorithme DPLL}
+\subsection{L'algorithme}
 Une FNC est de la forme $\bigwedge^n_{i=1}(l_1\vee\ldots\vee l_{k_i})$
-avec $l_j$ un \emph{litéral} et un ensemble de disjonction est appelé \emph{clause}.
+avec $l_j$ un \emph{littéral} et un ensemble de disjonction est appelé \emph{clause}.
 
 L'algorithme essaie d'attribuer des valeurs au variables, qui rendent
 la formule vraie. Mais avec deux règles particulières qui font qu'il
-n'y a pas besoin de vérifier toutes les possibilités de la table de vérité.
+n'y a pas besoin de vérifier toutes les possibilités de la table de
+vérité.
+\begin{itemize}
+\item La \emph{propagation par contrainte} permet, lorsqu'on attribue
+  une valeur à un littéral, de supprimer les littéraux devenus faux des
+  clauses, et de supprimer toute une clause dont un des littéraux est
+  devenu vrai (car la clause est vraie quelque soient les valeurs des
+  autres littéraux) .
+\item la \emph{clause unitaire} nous indique que s'il n'y a qu'un seul
+  littéral dans uen clause, alors ce littéral est défini vrai, pour que
+  la clause soit vraie.
+\end{itemize}
+DPLL attribue ainsi des valeurs aux variables, avec deux
+conditions d'arrêt :
+\begin{itemize}
+\item si on obtient la formule vide, alors on a trouvé une
+  instanciation pour chaque variable qui rend la formule satisfaisable.
+\item si on obtient une clause vide dans la formule, alors
+  l'instanciation rend la clause (et donc la formule)
+  non-satisfaisable (ce qu'on appelle un \emph{conflit}), il faut
+  alors revenir en arrière pour essayer de trouver une instanciation
+  différente.  
+\end{itemize}
+Les règles d'inférences pour DPLL sont définies ainsi :
+
+%% \begin{multicols}{2}
+\begin{prooftree}
+  \def\fCenter{\mbox{\ $\vdash$\ }}
+  \AxiomC{}
+  \LeftLabel{CONFLICT}
+  \UnaryInf$\Gamma \fCenter \Delta, \emptyset$
+\end{prooftree}
+
+\emph{CONFLICT} : si on obtiens une clause vide, il y a un conflit, il
+faut alors retourner en arrière pour chercher d'autres instanciacions.
+
+\begin{prooftree}
+  \def\fCenter{\mbox{\ $\vdash$\ }}
+  \AxiomC{$\Gamma,l \vdash \Delta$}
+  \LeftLabel{ASSUME}
+  \UnaryInf$\Gamma \fCenter \Delta, l$
+\end{prooftree}
+
+\emph{ASSUME} : si on a une clause contenant qu'un seul litéral $l$,
+alors il doit être supposé vrai (C'est la \emph{clause unitaire}).
+
+\begin{prooftree}
+  \def\fCenter{\mbox{\ $\vdash$\ }}
+  \AxiomC{$\Gamma,l \vdash \Delta$}
+  \AxiomC{$\Gamma,\neg l \vdash \Delta$}
+  \LeftLabel{UNSAT}
+  \BinaryInf$\Gamma \fCenter \Delta$
+\end{prooftree}
+
+\emph{UNSAT} : un litéral est d'abbord supposé vrai, et si aucune
+instanciations satisfaisante n'est trouvée(i.e. si toutes le sbranches
+de gauche termientn avec \emph{CONFLICT}), il est supposé faux.
+
+\begin{prooftree}
+  \def\fCenter{\mbox{\ $\vdash$\ }}
+  \AxiomC{$\Gamma, l \vdash \Delta, C$}
+  \LeftLabel{BCP_1}
+  \UnaryInf$\Gamma, l \fCenter \Delta,\neg l \vee C$
+\end{prooftree}
+
+\emph{BCP_1} : première règle de propagation par contrainte : les
+littéraux devenus faux dans les clauses sont supprimés.
+
+\begin{prooftree}
+  \def\fCenter{\mbox{\ $\vdash$\ }}
+  \AxiomC{$\Gamma, l \vdash \Delta$}
+  \LeftLabel{BCP_2}
+  \UnaryInf$\Gamma, l \fCenter \Delta, l \vee C$
+\end{prooftree}
+
+\emph{BCP_2} : seconde règle de propagation par contrainte, si une
+clause contient un littéral devenu vrai, elle est supprimé de la formule
+
+%% \end{multicols}
+\bigskip
+
+Elles décrivent l'état de l'algorithme ainsi :
+$\Gamma \vdash \Delta$ avec $\Gamma$ est l'ensemble des litéraux
+supposés vrais, et $\Delta$ la formule courante, avec TODO
+
+\subsection{L'implémentation}
+
+La représention de la FNC est indépendante de l'implémentaiton, les
+types qui représentent un littéral et une formule sont abstraits
+
+Le module Sat, est paramétré par un module de type FNC, et contient un
+module de type LITERAL, et un module de type Set.S pour l'ensemble des
+litéraux.
+
+Le type t du module contient un ensemble de litéraux \emph{gamma} et
+la formule \emph{delta} sous forme FNC.
+
+La fonciton \emph{assume} introduit un littéral dans l'environnement
+puis fait appel à la fonction \emph{bcp}.
+La fonction \emph{bcp} parcourt la formule et enlève tous les littéraux
+dont leur négation est dans \emph{gamma}, et si la littéral est dans
+gamma, toute la clause dans laquelle il est est supprimée.
+
+TODO
 
 \section{Améliorations}
 \subsection{Retour en arrière non chronologique}
+L'idée est d'éviter de parcourir des branches inutilement si on
+s'appercoit que l'ajout d'un littéral avec la règle \emph{UNSAT} n'a
+pas eu d'impacte sur la branche gauche, il est inutile d'aller
+vérifier la branche droite.
 
+Pour cela, on a besoin de garder en mémoire les dépendances qui ont
+conduit à l'ajout d'un littéral, et lorsque l'algorithme tombe sur un
+clonflit, on sait qu'il faut revenir en arrière à la dernière
+dépendance liée au conflit, car il est inutile de parcourir les autres
+branches qui n'ont pas d'impacts sur ce conflit.
+
+Ona joute au contexte des annotations aux littéraux, qui correspondent
+aux dépendances (les littéraux qui ont conduit à l'ajout de celui-ci).
+On ajoute aussi des annotations aux clauses de la formules, qui
+permettent de savoir avec quels littéraux celles-ci ont été réduites.
+
+\begin{multicols}{2}
+\begin{prooftree}
+  \def\fCenter{\mbox{\ $\vdash$\ }}
+  \AxiomC{}
+  \LeftLabel{CONFLICT}
+  \UnaryInf$\Gamma \fCenter \Delta, \emptyset[\mathcal{A}] : \mathcal{A}$
+\end{prooftree}
+
+\begin{prooftree}
+  \def\fCenter{\mbox{\ $\vdash$\ }}
+  \AxiomC{$\Gamma,l[\mathcal{B}] \vdash \Delta : \mathcal{A}$}
+  \LeftLabel{ASSUME}
+  \UnaryInf$\Gamma \fCenter \Delta, l[\mathcal{B}] : \mathcal{A}$
+\end{prooftree}
+
+\begin{prooftree}
+  \def\fCenter{\mbox{\ $\vdash$\ }}
+  \AxiomC{$\Gamma, l[\mathcal{B}] \vdash \Delta,C[\mathcal{B}\cup\mathcal{C}] : \mathcal{A}$}
+  \LeftLabel{BCP_1}
+  \UnaryInf$\Gamma, l[\mathcal{B}] \fCenter \Delta,\neg l \vee
+  C[\mathcal{C}] : \mathcal{A}$
+\end{prooftree}
+
+\begin{prooftree}
+  \def\fCenter{\mbox{\ $\vdash$\ }}
+  \AxiomC{$\Gamma, l[\mathcal{B}] \vdash \Delta : \mathcal{A}$}
+  \LeftLabel{BCP_2}
+  \UnaryInf$\Gamma , l[\mathcal{B}] \fCenter \Delta, l \vee
+  C[\mathcal{C}] : \mathcal{A}$
+\end{prooftree}
+
+\begin{prooftree}
+  \def\fCenter{\mbox{\ $\vdash$\ }}
+  \AxiomC{$\Gamma, l[l] \vdash \Delta : \mathcal{A}$}
+  \LeftLabel{BJ}
+  \UnaryInf$\Gamma \fCenter \Delta : \mathcal{A}$
+\end{prooftree}
+\end{multicols}
+
+\begin{prooftree}
+  \def\fCenter{\mbox{\ $\vdash$\ }}
+  \AxiomC{$\Gamma,l[l] \vdash \Delta : \mathcal{A}$}
+  \AxiomC{$\Gamma,\neg l[\mathcal{A}\backslash l] \vdash \Delta :
+    \mathcal{B}$}
+  \LeftLabel{UNSAT} 
+  \RightLabel{$l \in \mathcal{A}$}
+  \BinaryInf$\Gamma \fCenter \Delta : \mathcal{B}$
+\end{prooftree}
 
 \subsection{Apprentissage}
+
 
 \section{Formes Normales Conjonctives équi-satisfaisables}
 
