@@ -1,18 +1,44 @@
-********************************************************************************
-REUNION : mercredi 10 mars
-================================================================================
 
 ********************************************************************************
-
-
-
-
-
-Du 4 au 10 mars
+REUNION : mercredi 11 mars
 ================================================================================
+TODO :
+* faire au max de l'implem coq !
+* avoir lu 2 fois le papier mtac2
+* avoir fait 3 td et tp de plus
+********************************************************************************
 
+
+
+
+
+Du 11 au 18 mars
+================================================================================
 * 
 
+
+
+
+
+********************************************************************************
+REUNION : mercredi 11 mars
+================================================================================
+* presentation sat-micro
+
+* formalisation sat-micro en coq
+    * fnc, literal, var (entier), dpll 
+    * faire fonction courtes pour code propre et générique
+    * pas forcément tout prouver
+
+* continuer à lire papiers mtac2 !
+********************************************************************************
+
+
+
+
+
+Du 4 au 11 mars
+================================================================================
 * notes Sat-micro
 
 * implémentation Sat-micro (DPLL+retour en arrière non chronologique)
@@ -47,7 +73,6 @@ REUNION : mercredi 4 mars
 
 Du 2 au 4 mars
 ================================================================================
-
 * lecture de *SAT-micro* commencée
 
 * mise en place de la *fiche ltac*

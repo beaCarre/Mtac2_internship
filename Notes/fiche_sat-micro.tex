@@ -36,8 +36,9 @@ l'apprentissage.
 Une FNC est de la forme $\bigwedge^n_{i=1}(l_1\vee\ldots\vee l_{k_i})$
 avec $l_j$ un \emph{littéral} et un ensemble de disjonction est appelé \emph{clause}.
 
-L'algorithme essaie d'attribuer des valeurs au variables, qui rendent
-la formule vraie. Mais avec deux règles particulières qui font qu'il
+L'algorithme essaie d'attribuer des valeurs aux variables, pour
+chercher une combinaison qui rendent
+la formule vraie, mais avec deux règles particulières qui font qu'il
 n'y a pas besoin de vérifier toutes les possibilités de la table de
 vérité.
 \begin{itemize}
@@ -71,7 +72,7 @@ Les règles d'inférences pour DPLL sont définies ainsi :
   \UnaryInf$\Gamma \fCenter \Delta, \emptyset$
 \end{prooftree}
 
-\emph{CONFLICT} : si on obtiens une clause vide, il y a un conflit, il
+\emph{CONFLICT} : si on obtient une clause vide, il y a un conflit, il
 faut alors retourner en arrière pour chercher d'autres instanciacions.
 
 \begin{prooftree}
