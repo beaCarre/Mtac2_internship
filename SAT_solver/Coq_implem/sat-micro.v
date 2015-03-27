@@ -79,10 +79,15 @@ forall l:L.t, LSet.In l G -> model l.
     submodel e.(gamma) -> ~sat_goal e.(delta).
 
   Check derivable.
+  Check incompatible.
+  Check incompatible{|gamma:= LSet.empty ; delta := CSet.empty|} .
+  Check derivable {|gamma:= LSet.empty ; delta := CSet.empty|}.
 
   Theorem soundness :
-forall S : env, derivable S -> incompatible S.
+    forall S : env, derivable S -> incompatible S.
   Admitted.
+    
+
 
 Theorem completeness : 
   forall S : env, incompatible S -> derivable S.
